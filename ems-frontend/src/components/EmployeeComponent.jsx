@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { createEmployee } from '../Services/EmployeeService';
+import { createEmployee, getEmployee } from '../Services/EmployeeService';
 
 const EmployeeComponent = () => {
     const [firstName,setFirstName]=useState("");
@@ -16,6 +16,20 @@ const EmployeeComponent = () => {
         lastName:'',
         email:''
     })
+
+    useEffect(()=>{
+        if(id){
+            getEmployee(id).then(res=>{
+                setFirstName(res.data.firstName)
+                setLastName(res.data.lastName)
+                setEmail(res.data.email)
+            }).catch(error=>{
+                console.error(error);
+            })
+        }
+        
+    },[id])
+
     function saveEmployee(e){
         e.preventDefault();
         if(validateForm()){
