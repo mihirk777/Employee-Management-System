@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: ems-mysql
+    env_file:
+      - ./ems-backend/.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DB}
+    ports:
+      - "3306:3306"
+
+  backend:
+    build: ./ems-backend
+    container_name: ems-backend
+    env_file:
+      - ./ems-backend/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+  frontend:
+    build: ./ems-frontend
+    container_name: ems-frontend
+    env_file:
+      - ./ems-frontend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
